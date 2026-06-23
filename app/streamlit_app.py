@@ -26,6 +26,29 @@ import matplotlib
 matplotlib.use("Agg")
 
 # ─────────────────────────────────────────────
+# NLTK data download (needed for TextBlob on cloud)
+# ─────────────────────────────────────────────
+
+@st.cache_resource
+def download_nltk_data():
+    """Download NLTK corpora required by TextBlob."""
+    import nltk
+    import ssl
+    try:
+        _create_unverified_https_context = ssl._create_unverified_context
+    except AttributeError:
+        pass
+    else:
+        ssl._create_default_https_context = _create_unverified_https_context
+    for pkg in ["punkt", "punkt_tab", "averaged_perceptron_tagger", "wordnet", "stopwords", "brown"]:
+        try:
+            nltk.download(pkg, quiet=True)
+        except Exception:
+            pass
+
+download_nltk_data()
+
+# ─────────────────────────────────────────────
 # Page Configuration
 # ─────────────────────────────────────────────
 
@@ -390,19 +413,14 @@ st.markdown("""
 sbert_model, classifier, metadata, model_error = load_models()
 
 if model_error:
-    st.error(f"""
-    ⚠️ **Model not found!**
+    st.warning(f"""
+    ⚠️ **Model files not found in this deployment.**
 
     {model_error}
 
-    **To fix this, run the training notebooks in order:**
-    1. `notebooks/01_eda.ipynb`
-    2. `notebooks/02_features.ipynb`
-    3. `notebooks/03_train.ipynb`
-
-    Then restart the Streamlit app.
+    The trained classifier (`models/fake_news_model.pkl`) needs to be included in the repository.
+    The SBERT embedding model (`all-MiniLM-L6-v2`) will be downloaded automatically from HuggingFace on first run.
     """)
-    st.stop()
 
 # Display model info
 if metadata:
@@ -452,6 +470,11 @@ with col_btn2:
 # ── Analysis ────────────────────────────────────────────
 
 if analyze_clicked:
+    # Guard: check if model is loaded
+    if model_error or sbert_model is None or classifier is None:
+        st.error("❌ **Cannot analyze** — model files are not loaded. Please ensure `models/fake_news_model.pkl` and `models/model_metadata.pkl` are committed to the GitHub repository.")
+        st.stop()
+
     # Input validation
     if not article_text or len(article_text.strip()) < 50:
         st.warning("⚠️ Please enter a news article with at least 50 characters for accurate analysis.")
@@ -477,15 +500,15 @@ if analyze_clicked:
         except Exception as e:
             st.error(f"""
             ❌ **Analysis Failed!**
-            
+
             An error occurred during the prediction or explanation pipeline:
-            
+
             **Error details:** `{e}`
-            
+
             **How to resolve this:**
-            1. Run the validation tool in your terminal: `python validate_model_artifacts.py` to check model health.
-            2. Make sure you downloaded the datasets and ran the training pipeline: `python run_pipeline.py`.
-            3. Check the command-line logs for details on the specific feature or converter that failed.
+            1. Ensure all model files are present in the `models/` directory.
+            2. Check that all dependencies in `requirements.txt` were installed correctly.
+            3. Try refreshing the page — the SBERT model may still be downloading on first run.
             """)
             st.stop()
 

@@ -17,11 +17,16 @@ ENV/
 *.ipynb~
 
 # ─── ML Models & Features ─────────────────
-models/*.pkl
-outputs/*.npz
-outputs/*.pkl
+# First: blanket-ignore all pkl/npz files
 *.pkl
 *.npz
+outputs/*.npz
+outputs/*.pkl
+
+# Then: explicitly UN-ignore the two deployment model files
+# (negations MUST come after the ignores they override)
+!models/fake_news_model.pkl
+!models/model_metadata.pkl
 
 # ─── Data Files (large) ───────────────────
 data/
