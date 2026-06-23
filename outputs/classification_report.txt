@@ -1,0 +1,8 @@
+              precision    recall  f1-score   support
+
+   Real News     0.9545    0.9640    0.9592       500
+   Fake News     0.9636    0.9540    0.9588       500
+
+    accuracy                         0.9590      1000
+   macro avg     0.9590    0.9590    0.9590      1000
+weighted avg     0.9590    0.9590    0.9590      1000

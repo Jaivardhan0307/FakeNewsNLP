@@ -1,0 +1,60 @@
+# ─── Python ───────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+*.pyo
+
+# ─── Virtual Environments ─────────────────
+envs/
+venv/
+.venv/
+env/
+ENV/
+
+# ─── Jupyter ──────────────────────────────
+.ipynb_checkpoints/
+*.ipynb~
+
+# ─── ML Models & Features ─────────────────
+models/*.pkl
+outputs/*.npz
+outputs/*.pkl
+*.pkl
+*.npz
+
+# ─── Data Files (large) ───────────────────
+data/
+*.csv
+*.tsv
+*.json
+
+# ─── OS / Editor ──────────────────────────
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ─── Build Artifacts ──────────────────────
+dist/
+build/
+*.egg-info/
+
+# ─── Logs ─────────────────────────────────
+*.log
+logs/
+
+# ─── Secrets ──────────────────────────────
+.env
+.env.local
+secrets.toml
+kaggle.json
+
+# ─── HuggingFace Cache ────────────────────
+.cache/
+~/.cache/huggingface/
+
+# ─── Streamlit ────────────────────────────
+.streamlit/secrets.toml
